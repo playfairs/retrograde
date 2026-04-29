@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
     
     auto binary = core::getValue(result);
     
-    std::cout << "=== Retrograde Decompiler Pipeline ===\n\n";
+    std::cout << "Retrograde Decompiler Pipeline\n\n";
     std::cout << "Loaded: " << binary->filename << "\n";
     std::cout << "Architecture: " << static_cast<int>(binary->config.arch) << "\n";
     std::cout << "Entry point: 0x" << std::hex << binary->entry_point << std::dec << "\n";
@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
     auto decoder = disasm::createDecoder(binary->config.arch);
     disasm::Disassembler disassembler(std::move(decoder));
     
-    std::cout << "--- Disassembly ---\n";
+    std::cout << "Disassembly\n\n";
     auto instructions = disassembler.disassembleSection(*code_section);
     for (const auto& inst : instructions) {
         std::cout << "0x" << std::hex << inst.address.virtual_address << std::dec << ":  ";
@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
     std::vector<bin::Symbol> funcs = {func_sym};
     auto func_disasms = disassembler.disassembleFunctions(*code_section, funcs);
     
-    std::cout << "--- Building CFG ---\n";
+    std::cout << "Building CFG\n\n";
     analysis::CFGBuilder cfg_builder;
     emitter::Emitter emitter;
     decompiler::Decompiler decompiler;
@@ -126,12 +126,12 @@ int main(int argc, char* argv[]) {
         pseudo_funcs.push_back(pseudo);
     }
     
-    std::cout << "--- Decompiled Output ---\n";
+    std::cout << "Decompiled Output\n\n";
     for (const auto& pf : pseudo_funcs) {
         std::cout << decompiler.emitPseudoC(pf) << "\n";
     }
     
-    std::cout << "--- Emitted Output ---\n";
+    std::cout << "Emitted Output\n\n";
     emitter.emit(pseudo_funcs, std::cout);
     
     return 0;
