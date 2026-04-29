@@ -2,7 +2,7 @@
   lib,
   stdenv,
   clang,
-  cmake,
+  meson,
   ninja,
   qt6,
   pkg-config,
@@ -15,16 +15,16 @@ stdenv.mkDerivation {
   inherit src;
 
   buildInputs = [ clang qt6.qtbase qt6.qttools ];
-  nativeBuildInputs = [ qt6.wrapQtAppsHook pkg-config cmake ];
-  dontUseCmakeConfigure = true;
+  nativeBuildInputs = [ qt6.wrapQtAppsHook pkg-config meson ninja ];
+  dontUseMesonConfigure = true;
 
   buildPhase = ''
     clang++ -std=c++20 -Isrc src/main.cpp -o retrograde
     
-    cmake -B build-gui -S src/gui \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_PREFIX_PATH="${qt6.qtbase}"
-    cmake --build build-gui
+    meson setup build-gui src/gui \
+      --buildtype=release \
+      --prefix="${qt6.qtbase}"
+    meson compile -C build-gui
     cp build-gui/retrograde-gui .
   '';
 
