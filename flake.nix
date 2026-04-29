@@ -20,7 +20,8 @@
 
       packages = forAllSystems ({ pkgs, ... }: {
         default = import ./nix/buildPackage.nix {
-          inherit (pkgs) lib stdenv clang cmake ninja;
+          inherit (pkgs) lib stdenv clang cmake ninja qt6 pkg-config;
+          src = ./.;
         };
       });
 
