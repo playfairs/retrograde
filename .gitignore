@@ -1,0 +1,35 @@
+# Build artifacts
+retrograde
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.dylib
+*.exe
+
+# Build directories
+build/
+cmake-build-*/
+out/
+Debug/
+Release/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Nix
+result
+result-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.log
