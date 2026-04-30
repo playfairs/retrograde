@@ -20,8 +20,6 @@ stdenv.mkDerivation {
   nativeBuildInputs = with qt6; [
     wrapQtAppsHook
     pkg-config
-    meson
-    ninja
   ];
 
   dontUseMesonConfigure = true;

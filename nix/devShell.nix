@@ -15,13 +15,14 @@
 mkShell {
   meta.license = lib.licenses.unlicense;
 
-  buildInputs = [
+  buildInputs = with qt6; [
     clang
     clang-tools
     meson
     cmake
     ninja
-    qt6.full
+    qtbase
+    qttools
   ]
   ++ lib.optionals stdenv.isLinux [
     gdb
@@ -30,7 +31,8 @@ mkShell {
     lldb
   ];
 
-  nativeBuildInputs = [
+  nativeBuildInputs = with qt6; [
+    wrapQtAppsHook
     pkg-config
   ];
 }
