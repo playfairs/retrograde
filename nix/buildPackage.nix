@@ -2,10 +2,10 @@
   lib,
   stdenv,
   clang,
+  qt6,
+  pkg-config,
   meson,
   ninja,
-  qt6,
-  pkg-config
 }:
 stdenv.mkDerivation {
   pname = "retrograde";
@@ -13,16 +13,17 @@ stdenv.mkDerivation {
   src = ../.;
 
   buildInputs = with qt6; [
-    clang
-    qtbase
     qttools
+    qtbase
   ];
+
   nativeBuildInputs = with qt6; [
     wrapQtAppsHook
     pkg-config
+    meson
+    ninja
+    clang
   ];
-
-  dontUseMesonConfigure = true;
 
   meta = with lib; {
     description = "A C++ binary decompiler";
