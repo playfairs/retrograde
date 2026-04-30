@@ -6,23 +6,27 @@
   clang-tools,
   pkg-config,
   cmake,
+  meson,
   ninja,
   gdb,
-  lldb,
+  qt6,
+  lldb
 }:
-
-mkShell rec {
+mkShell {
   meta.license = lib.licenses.unlicense;
 
   buildInputs = [
     clang
     clang-tools
-    pkg-config
+    meson
     cmake
     ninja
-  ] ++ lib.optionals stdenv.isLinux [
+    qt6.full
+  ]
+  ++ lib.optionals stdenv.isLinux [
     gdb
-  ] ++ lib.optionals stdenv.isDarwin [
+  ]
+  ++ lib.optionals stdenv.isDarwin [
     lldb
   ];
 

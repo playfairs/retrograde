@@ -1,34 +1,41 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  inputs.treefmt-nix.url = "github:numtide/treefmt-nix";
-
-  outputs = { self, nixpkgs, treefmt-nix, ... }@inputs:
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/25.11";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+  };
+  outputs =
+    { nixpkgs, ... }@inputs:
     let
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
-      forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
-        pkgs = nixpkgs.legacyPackages.${system};
-        inherit system;
-        treefmt = inputs.treefmt-nix;
-      });
+      forAllSystems =
+        f:
+        nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed (
+          system:
+          f {
+            pkgs = import nixpkgs { inherit system; };
+            inherit system;
+            inherit (inputs)treefmt-nix;
+          }
+        );
     in
     {
-      devShells = forAllSystems ({ pkgs, ... }: {
-        default = import ./nix/devShell.nix {
-          inherit (pkgs) mkShell lib stdenv clang clang-tools pkg-config cmake ninja gdb lldb;
-        };
-      });
-
-      packages = forAllSystems ({ pkgs, ... }: {
-        default = import ./nix/buildPackage.nix {
-          inherit (pkgs) lib stdenv clang meson ninja qt6 pkg-config;
-          src = ./.;
-        };
-      });
-
-      formatter = forAllSystems ({ pkgs, treefmt, ... }:
-        import ./nix/formatter.nix {
-          inherit pkgs treefmt;
+      devShells = forAllSystems (
+        { pkgs, ... }:
+        rec {
+          retrograde = pkgs.callPackage ./nix/devShell.nix { };
+          default = retrograde;
         }
+      );
+
+      packages = forAllSystems (
+        { pkgs, ... }:
+        rec {
+          retrograde = pkgs.callPackage ./nix/buildPackage.nix { };
+          default = retrograde;
+        }
+      );
+
+      formatter = forAllSystems (
+        { pkgs, treefmt-nix, ... }: pkgs.callPackage ./nix/formatter.nix { inherit treefmt-nix; }
       );
     };
 }
